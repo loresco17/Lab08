@@ -25,8 +25,20 @@ class Model:
         :param mese: Mese selezionato (un intero da 1 a 12)
         :return: lista di tuple --> (nome del distributore, media), es. (Distributore A, 1.789)
         """
-        # TODO
-
+        res=[]
+        for d in self._distributori:
+            prezzo_tot=0
+            giorni=0
+            media=0
+            prezzi=d.get_prezzi()
+            for p in prezzi:
+                if p.data.month==mese:
+                    prezzo_tot+=p.prezzo_litro
+                    giorni+=1
+            if giorni>0:
+                media=prezzo_tot/giorni
+            res.append((d.nome, media))
+        return res
     def get_sequenza_ottima(self, mese:int):
         """
         Calcola la sequenza ottimale di rifornimenti nei primi 7 giorni
@@ -53,4 +65,17 @@ class Model:
         Restituisce i prezzi dei primi 7 giorni del mese selezionato per ciascun distributore.
         :return: un dizionario: {id_distributore: [prezzo_giorno1, ..., prezzo_giorno7]}
         """
-        # TODO
+        diz={}
+        for d in self._distributori:
+            prezzi=d.get_prezzi()
+            i=0
+            sett=[]
+            for p in prezzi:
+                if i==7:
+                    break
+                else:
+                    if p.data.month==mese:
+                        sett.append(p.prezzo_litro)
+                    i+=1
+                diz[d.id]=sett
+        return diz
